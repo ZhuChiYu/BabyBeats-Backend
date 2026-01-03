@@ -52,7 +52,7 @@ export const getDiapers = async (req: Request, res: Response, next: NextFunction
 export const createDiaper = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = (req as any).userId;
-    const { babyId, type, time, poopConsistency, poopColor, poopAmount, peeAmount, hasAbnormality, notes } = req.body;
+    const { id, babyId, type, time, poopConsistency, poopColor, poopAmount, peeAmount, hasAbnormality, notes } = req.body;
 
     // 验证 baby 属于当前用户
     const babyCheck = await pool.query(
@@ -65,10 +65,10 @@ export const createDiaper = async (req: Request, res: Response, next: NextFuncti
     }
 
     const result = await pool.query(
-      `INSERT INTO diapers (baby_id, type, time, poop_consistency, poop_color, poop_amount, pee_amount, has_abnormality, notes)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      `INSERT INTO diapers (id, baby_id, type, time, poop_consistency, poop_color, poop_amount, pee_amount, has_abnormality, notes)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
        RETURNING *`,
-      [babyId, type, time, poopConsistency, poopColor, poopAmount, peeAmount, hasAbnormality, notes]
+      [id, babyId, type, time, poopConsistency, poopColor, poopAmount, peeAmount, hasAbnormality, notes]
     );
 
     res.status(201).json({

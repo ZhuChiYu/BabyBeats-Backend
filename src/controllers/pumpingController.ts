@@ -52,7 +52,7 @@ export const getPumpings = async (req: Request, res: Response, next: NextFunctio
 export const createPumping = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = (req as any).userId;
-    const { babyId, time, method, leftAmount, rightAmount, totalAmount, storageMethod, notes } = req.body;
+    const { id, babyId, time, method, leftAmount, rightAmount, totalAmount, storageMethod, notes } = req.body;
 
     // 验证 baby 属于当前用户
     const babyCheck = await pool.query(
@@ -65,10 +65,10 @@ export const createPumping = async (req: Request, res: Response, next: NextFunct
     }
 
     const result = await pool.query(
-      `INSERT INTO pumpings (baby_id, time, method, left_amount, right_amount, total_amount, storage_method, notes)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      `INSERT INTO pumpings (id, baby_id, time, method, left_amount, right_amount, total_amount, storage_method, notes)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        RETURNING *`,
-      [babyId, time, method, leftAmount, rightAmount, totalAmount, storageMethod, notes]
+      [id, babyId, time, method, leftAmount, rightAmount, totalAmount, storageMethod, notes]
     );
 
     res.status(201).json({

@@ -60,6 +60,7 @@ export const createBaby = async (req: Request, res: Response, next: NextFunction
   try {
     const userId = (req as any).userId;
     const {
+      id,
       name,
       gender,
       birthday,
@@ -73,12 +74,13 @@ export const createBaby = async (req: Request, res: Response, next: NextFunction
 
     const result = await pool.query(
       `INSERT INTO babies (
-        user_id, name, gender, birthday, due_date, blood_type,
+        id, user_id, name, gender, birthday, due_date, blood_type,
         birth_height, birth_weight, birth_head_circ, avatar
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       RETURNING *`,
       [
+        id,
         userId,
         name,
         gender,

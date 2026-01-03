@@ -53,14 +53,15 @@ export const createFeeding = async (req: Request, res: Response, next: NextFunct
   try {
     const userId = (req as any).userId;
     const {
+      id,
       babyId,
       type,
       time,
-      amount,
-      duration,
+      milkAmount,
       leftDuration,
       rightDuration,
-      note,
+      milkBrand,
+      notes,
     } = req.body;
 
     // 验证 baby 属于当前用户
@@ -74,10 +75,10 @@ export const createFeeding = async (req: Request, res: Response, next: NextFunct
     }
 
     const result = await pool.query(
-      `INSERT INTO feedings (baby_id, type, time, amount, duration, left_duration, right_duration, note)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      `INSERT INTO feedings (id, baby_id, type, time, milk_amount, left_duration, right_duration, milk_brand, notes)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        RETURNING *`,
-      [babyId, type, time, amount, duration, leftDuration, rightDuration, note]
+      [id, babyId, type, time, milkAmount, leftDuration, rightDuration, milkBrand, notes]
     );
 
     res.status(201).json({

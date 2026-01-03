@@ -52,7 +52,7 @@ export const getGrowthRecords = async (req: Request, res: Response, next: NextFu
 export const createGrowthRecord = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = (req as any).userId;
-    const { babyId, date, height, weight, headCirc, temperature, bmi, notes } = req.body;
+    const { id, babyId, date, height, weight, headCirc, temperature, bmi, notes } = req.body;
 
     // 验证 baby 属于当前用户
     const babyCheck = await pool.query(
@@ -65,10 +65,10 @@ export const createGrowthRecord = async (req: Request, res: Response, next: Next
     }
 
     const result = await pool.query(
-      `INSERT INTO growth_records (baby_id, date, height, weight, head_circ, temperature, bmi, notes)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      `INSERT INTO growth_records (id, baby_id, date, height, weight, head_circ, temperature, bmi, notes)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        RETURNING *`,
-      [babyId, date, height, weight, headCirc, temperature, bmi, notes]
+      [id, babyId, date, height, weight, headCirc, temperature, bmi, notes]
     );
 
     res.status(201).json({

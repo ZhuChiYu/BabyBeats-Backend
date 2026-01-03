@@ -52,7 +52,7 @@ export const getSleeps = async (req: Request, res: Response, next: NextFunction)
 export const createSleep = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = (req as any).userId;
-    const { babyId, startTime, endTime, duration, sleepType, fallAsleepMethod, notes } = req.body;
+    const { id, babyId, startTime, endTime, duration, sleepType, fallAsleepMethod, notes } = req.body;
 
     // 验证 baby 属于当前用户
     const babyCheck = await pool.query(
@@ -65,10 +65,10 @@ export const createSleep = async (req: Request, res: Response, next: NextFunctio
     }
 
     const result = await pool.query(
-      `INSERT INTO sleeps (baby_id, start_time, end_time, duration, sleep_type, fall_asleep_method, notes)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
+      `INSERT INTO sleeps (id, baby_id, start_time, end_time, duration, sleep_type, fall_asleep_method, notes)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
        RETURNING *`,
-      [babyId, startTime, endTime, duration, sleepType, fallAsleepMethod, notes]
+      [id, babyId, startTime, endTime, duration, sleepType, fallAsleepMethod, notes]
     );
 
     res.status(201).json({

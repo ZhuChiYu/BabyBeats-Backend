@@ -15,6 +15,10 @@ import diaperRoutes from './routes/diaperRoutes';
 import sleepRoutes from './routes/sleepRoutes';
 import pumpingRoutes from './routes/pumpingRoutes';
 import growthRoutes from './routes/growthRoutes';
+import vaccineRoutes from './routes/vaccineRoutes';
+import milestoneRoutes from './routes/milestoneRoutes';
+import medicationRoutes from './routes/medicationRoutes';
+import medicalVisitRoutes from './routes/medicalVisitRoutes';
 
 const app = express();
 
@@ -69,6 +73,10 @@ app.use(`${apiVersion}/diapers`, diaperRoutes);
 app.use(`${apiVersion}/sleeps`, sleepRoutes);
 app.use(`${apiVersion}/pumpings`, pumpingRoutes);
 app.use(`${apiVersion}/growth`, growthRoutes);
+app.use(`${apiVersion}/vaccines`, vaccineRoutes);
+app.use(`${apiVersion}/milestones`, milestoneRoutes);
+app.use(`${apiVersion}/medications`, medicationRoutes);
+app.use(`${apiVersion}/medical-visits`, medicalVisitRoutes);
 
 // 添加路由调试日志
 console.log('📍 Registered routes:');
@@ -80,6 +88,10 @@ console.log(`  - ${apiVersion}/diapers`);
 console.log(`  - ${apiVersion}/sleeps`);
 console.log(`  - ${apiVersion}/pumpings`);
 console.log(`  - ${apiVersion}/growth`);
+console.log(`  - ${apiVersion}/vaccines`);
+console.log(`  - ${apiVersion}/milestones`);
+console.log(`  - ${apiVersion}/medications`);
+console.log(`  - ${apiVersion}/medical-visits`);
 
 // 404 处理
 app.use(notFound);
