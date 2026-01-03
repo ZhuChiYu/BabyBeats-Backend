@@ -38,11 +38,14 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
 
     // 创建新用户
     const passwordHash = await hashPassword(password);
+    // 生成用户 ID（时间戳 + 随机字符串）
+    const userId = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+    
     const result = await pool.query(
-      `INSERT INTO users (email, password_hash, name)
-       VALUES ($1, $2, $3)
+      `INSERT INTO users (id, email, password_hash, name)
+       VALUES ($1, $2, $3, $4)
        RETURNING id, email, name, created_at`,
-      [email, passwordHash, name]
+      [userId, email, passwordHash, name]
     );
 
     const user = result.rows[0];
