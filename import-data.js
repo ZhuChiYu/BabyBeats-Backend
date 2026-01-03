@@ -127,9 +127,9 @@ async function importDiapers(client, diapers, babyId) {
   for (const diaper of diapers) {
     await client.query(
       `INSERT INTO diapers (id, baby_id, time, type, poop_consistency, poop_color, 
-                           poop_amount, pee_amount, has_abnormality, wet_weight, 
-                           dry_weight, urine_amount, notes, created_at, updated_at, synced_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+                           poop_amount, pee_amount, has_abnormality, notes, 
+                           created_at, updated_at, synced_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
        ON CONFLICT (id) DO UPDATE SET
          time = EXCLUDED.time,
          type = EXCLUDED.type,
@@ -144,9 +144,6 @@ async function importDiapers(client, diapers, babyId) {
         diaper.poopAmount,
         diaper.peeAmount,
         diaper.hasAbnormality || false,
-        diaper.wetWeight,
-        diaper.dryWeight,
-        diaper.urineAmount,
         diaper.notes,
         toTimestamp(diaper.createdAt),
         toTimestamp(diaper.updatedAt),
