@@ -10,7 +10,7 @@ echo ""
 
 # 配置
 EMAIL="zhujinxi@qq.com"
-PASSWORD="123456"
+PASSWORD="zhu123456"
 NAME="朱锦汐"
 JSON_FILE="BabyBeats_朱锦汐_1767427094259.json"
 

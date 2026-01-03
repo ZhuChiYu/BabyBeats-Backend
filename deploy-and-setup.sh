@@ -40,7 +40,7 @@ echo ""
 # 6. 创建账号
 echo "6️⃣ 创建账号..."
 EMAIL="zhujinxi@qq.com"
-PASSWORD="123456"
+PASSWORD="zhu123456"
 NAME="朱锦汐"
 
 REGISTER_RESPONSE=$(curl -s -X POST http://localhost:4100/api/v1/auth/register \
