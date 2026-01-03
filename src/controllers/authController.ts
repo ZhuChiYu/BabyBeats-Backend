@@ -153,7 +153,7 @@ export const getProfile = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-export const appleLogin = async (req: Request, res: Response, next: NextFunction) => {
+export const appleLogin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const { appleId, email, fullName } = req.body;
 
@@ -231,7 +231,8 @@ export const appleLogin = async (req: Request, res: Response, next: NextFunction
           console.log('apple_id column added successfully');
           
           // 重新执行 Apple 登录逻辑
-          return appleLogin(req, res, next);
+          await appleLogin(req, res, next);
+          return;
         } catch (alterError) {
           console.error('Failed to add apple_id column:', alterError);
           throw new AppError('Database schema update failed', 500);
