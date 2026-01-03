@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  # PostgreSQL 数据库
+  postgres:
+    image: postgres:16-alpine
+    container_name: babybeats-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-babybeats_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-babybeats_pass_2024}
+      POSTGRES_DB: ${DB_NAME:-babybeats}
+      POSTGRES_INITDB_ARGS: "-E UTF8"
+    ports:
+      - "5500:5432"  # 使用 5500 避免与 RoomEase 的 5433 冲突
+    volumes:
+      - babybeats_postgres_data:/var/lib/postgresql/data
+      - ./src/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-babybeats_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - babybeats-network
+
+  # API 服务
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: babybeats-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 3000
+      API_VERSION: ${API_VERSION:-v1}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-babybeats}
+      DB_USER: ${DB_USER:-babybeats_user}
+      DB_PASSWORD: ${DB_PASSWORD:-babybeats_pass_2024}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-90d}
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+      RATE_LIMIT_WINDOW_MS: ${RATE_LIMIT_WINDOW_MS:-900000}
+      RATE_LIMIT_MAX_REQUESTS: ${RATE_LIMIT_MAX_REQUESTS:-100}
+    ports:
+      - "4100:3000"  # 使用 4100 避免与 RoomEase 的 4000 冲突
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - babybeats-network
+
+  # pgAdmin (可选，用于数据库管理)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: babybeats-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@babybeats.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin123}
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "5051:80"  # 使用 5051 避免与其他服务冲突
+    depends_on:
+      - postgres
+    networks:
+      - babybeats-network
+    profiles:
+      - tools  # 使用 profile，默认不启动，需要时用 --profile tools
+
+volumes:
+  babybeats_postgres_data:
+    driver: local
+    name: babybeats_postgres_data
+
+networks:
+  babybeats-network:
+    driver: bridge
+    name: babybeats-network  # 独立的网络名称，避免与 RoomEase 的 roomease-network 冲突
+
